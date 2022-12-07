@@ -7,13 +7,11 @@ import { selectUserById } from "./userApiSlice";
 
 export default function User({ userId }) {
   const user = useSelector((state) => selectUserById(state, userId));
-  console.log(user, "user");
+  const navigate = useNavigate();
 
-  const navigate = useNavigate;
+  const handleEdit = () => navigate(`/dash/users/${userId}`);
 
   if (user) {
-    const handleEdit = () => navigate(`/dash/users/${userId}`);
-
     const userRolesString = user.roles.toString().replaceAll(",", ", ");
 
     const cellStatus = user.active ? "" : "table__cell--inactive";
