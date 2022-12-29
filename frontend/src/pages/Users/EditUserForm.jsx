@@ -142,7 +142,7 @@ export default function EditUserForm({ user }) {
             <input
               id="active"
               type="checkbox"
-              value={active}
+              checked={active}
               onChange={onActiveChanged}
               autoComplete="off"
             />

@@ -13,6 +13,8 @@ import EditUser from './pages/Users/EditUser';
 import Prefetch from './pages/Prefetch/Prefetch';
 import DashLayout from './components/DashLayout';
 import NewUserForm from './pages/Users/NewUserForm';
+import EditNote from './pages/Notes/EditNote';
+import NewNote from './pages/Notes/NewNote';
 
 /**
  * 
@@ -32,6 +34,8 @@ function App() {
 
             <Route path="notes">
               <Route index element={<Notes />} />
+              <Route path={`:id`} element={<EditNote />} />
+              <Route path={`new`} element={<NewNote />} />
             </Route>
 
             <Route path="users">

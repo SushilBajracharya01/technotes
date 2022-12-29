@@ -9,11 +9,11 @@ import { selectNoteById } from "./notesApiSlice";
 export default function EditNote() {
   const { id } = useParams();
 
-  const user = useSelector(selectAllUsers);
-  const note = useSelector((state) => selectNoteById(id));
+  const users = useSelector(selectAllUsers);
+  const note = useSelector((state) => selectNoteById(state, id));
 
   const content =
-    note && user ? <EditNoteForm note={note} user={user} /> : <Loading />;
+    note && users ? <EditNoteForm note={note} users={users} /> : <Loading />;
 
   return content;
 }

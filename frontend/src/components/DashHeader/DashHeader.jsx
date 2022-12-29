@@ -1,10 +1,9 @@
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faBackward, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSendLogoutMutation } from "../../app/auth/authApiSlice";
 import Button from "../../elements/Button";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const NOTES_REGEX = /^\/dash\/notes(\/)?$/;
@@ -17,7 +16,7 @@ export default function DashHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const onGoHomeClicked = () => navigate("/dash");
+  const onGoBackClicked = () => navigate(-1);
 
   const [sendLogout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
@@ -68,11 +67,11 @@ export default function DashHeader() {
       {pathname !== "/dash" && (
         <div className="mt-4 text-center sm:text-left">
           <Button
-            icon={<FontAwesomeIcon className="mr-2" icon={faHouse} />}
+            icon={<FontAwesomeIcon className="mr-2" icon={faBackward} />}
             variant="outline-primary"
-            label="Go Home"
+            label="Go Back"
             className="mb-4"
-            onClick={onGoHomeClicked}
+            onClick={onGoBackClicked}
           />
         </div>
       )}
