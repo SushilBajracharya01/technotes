@@ -1,7 +1,12 @@
+import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ErrorAlert from "../../components/ErrorAlert";
 import { ROLES } from "../../config/roles";
+import Button from "../../elements/Button";
+import Input from "../../elements/Input";
 import { useDeleteUserMutation, useUpdateUserMutation } from "./userApiSlice";
 
 export default function EditUserForm({ user }) {
@@ -78,64 +83,93 @@ export default function EditUserForm({ user }) {
 
   return (
     <div>
-      <p>{errContent}</p>
-
       <form onSubmit={onSaveUserClicked}>
-        <h2>Edit User</h2>
-
-        <button type="submit" disabled={!canSave}>
-          Save
-        </button>
-
-        <button type="button" onClick={onDeleteUserClicked}>
-          Delete
-        </button>
-
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={onUsernameChanged}
-            autoComplete="off"
-          />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold ">Edit User</h2>
         </div>
 
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={onPasswordChanged}
-            autoComplete="off"
-          />
-        </div>
+        <div className="w-full lg:w-1/2 lg:mx-auto">
+          <div className="mb-5">
+            <Input
+              label="Username"
+              id="username"
+              type="text"
+              value={username}
+              onChange={onUsernameChanged}
+              autoComplete="off"
+            />
+          </div>
 
-        <div>
-          <label htmlFor="roles">Assigned Roles</label>
-          <select
-            id="roles"
-            name="roles"
-            multiple={true}
-            size="3"
-            value={roles}
-            onChange={onRolesChanged}
+          <div className="mb-5">
+            <Input
+              label="Password"
+              id="password"
+              type="password"
+              value={password}
+              onChange={onPasswordChanged}
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="mb-5">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="roles"
+            >
+              Assigned Roles
+            </label>
+            <select
+              className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              id="roles"
+              name="roles"
+              multiple={true}
+              size="3"
+              value={roles}
+              onChange={onRolesChanged}
+            >
+              {options}
+            </select>
+          </div>
+
+          <div className="mb-5">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="active"
+            >
+              Active
+            </label>
+
+            <input
+              id="active"
+              type="checkbox"
+              value={active}
+              onChange={onActiveChanged}
+              autoComplete="off"
+            />
+          </div>
+
+          <Button
+            type="submit"
+            disabled={!canSave}
+            label="Save"
+            icon={<FontAwesomeIcon icon={faSave} className="mr-2" />}
           >
-            {options}
-          </select>
-        </div>
+            Save
+          </Button>
 
-        <div>
-          <label htmlFor="active">Active</label>
-          <input
-            id="active"
-            type="checkbox"
-            value={active}
-            onChange={onActiveChanged}
-            autoComplete="off"
-          />
+          <Button
+            variant="danger-outline"
+            label="Delete"
+            className="ml-4"
+            icon={<FontAwesomeIcon icon={faTrash} className="mr-2" />}
+            onClick={onDeleteUserClicked}
+          >
+            Delete
+          </Button>
+
+          <p className="h-[20px] mt-4">
+            <ErrorAlert message={errContent} />
+          </p>
         </div>
       </form>
     </div>

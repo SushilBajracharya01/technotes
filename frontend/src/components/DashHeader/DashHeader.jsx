@@ -1,18 +1,81 @@
-import { Link } from "react-router-dom";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSendLogoutMutation } from "../../app/auth/authApiSlice";
+import Button from "../../elements/Button";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
+
+const DASH_REGEX = /^\/dash(\/)?$/;
+const NOTES_REGEX = /^\/dash\/notes(\/)?$/;
+const USERS_REGEX = /^\/dash\/users(\/)?$/;
 
 /**
  *
  */
 export default function DashHeader() {
-  return (
-    <header className="dash-header">
-      <div className="dash-header__container">
-        <Link to="/dash/notes">
-          <h1 className="dash-header__title">techNotes</h1>
-        </Link>
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-        <nav className="dash-header__nav">{/* add nav buttons later */}</nav>
-      </div>
-    </header>
+  const onGoHomeClicked = () => navigate("/dash");
+
+  const [sendLogout, { isLoading, isSuccess, isError, error }] =
+    useSendLogoutMutation();
+
+  useEffect(() => {
+    if (isSuccess) navigate("/");
+  }, [isSuccess, navigate]);
+
+  if (isLoading) return <p>Loading ...</p>;
+
+  if (isError) return <p>Error: {error.data?.message}</p>;
+
+  let dashClass = null;
+  if (
+    !DASH_REGEX.test(pathname) &&
+    !NOTES_REGEX.test(pathname) &&
+    !USERS_REGEX.test(pathname)
+  ) {
+    dashClass = "dash-header__container--small";
+  }
+
+  const handleLogout = () => {
+    sendLogout();
+    navigate("/login");
+  };
+
+  return (
+    <div className="container px-4 sm:px-0 mx-auto ">
+      <header className="backdrop-blur-md py-4 ">
+        <div className={`flex justify-between items-center ${dashClass}`}>
+          <Link to="/dash/notes">
+            <h1 className="font-bold text-xl text-slate-100">TechNotes</h1>
+          </Link>
+
+          <nav className="dash-header__nav">
+            <Button
+              variant="secondary"
+              onClick={handleLogout}
+              label="Sign Out"
+              icon={
+                <FontAwesomeIcon icon={faRightFromBracket} className="mr-2" />
+              }
+            />
+          </nav>
+        </div>
+      </header>
+
+      {pathname !== "/dash" && (
+        <div className="mt-4 text-center sm:text-left">
+          <Button
+            icon={<FontAwesomeIcon className="mr-2" icon={faHouse} />}
+            variant="outline-primary"
+            label="Go Home"
+            className="mb-4"
+            onClick={onGoHomeClicked}
+          />
+        </div>
+      )}
+    </div>
   );
 }

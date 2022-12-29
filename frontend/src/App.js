@@ -1,23 +1,25 @@
-import './App.css';
 import { Routes, Route } from 'react-router-dom';
 
 //
 import Layout from './components/Layout';
 
 //
-import Public from './pages/Public';
 import Login from './pages/Login';
-import DashLayout from './components/DashLayout';
-import Welcome from './pages/Welcome';
 import Notes from './pages/Notes';
 import Users from './pages/Users';
-import NewUserForm from './pages/Users/NewUserForm';
+import Public from './pages/Public';
+import Welcome from './pages/Welcome';
 import EditUser from './pages/Users/EditUser';
 import Prefetch from './pages/Prefetch/Prefetch';
+import DashLayout from './components/DashLayout';
+import NewUserForm from './pages/Users/NewUserForm';
 
+/**
+ * 
+ */
 function App() {
   return (
-    <div className="App">
+    <>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Public />} />
@@ -25,7 +27,6 @@ function App() {
         </Route>
 
         <Route element={<Prefetch />}>
-
           <Route path="dash" element={<DashLayout />}>
             <Route index element={<Welcome />} />
 
@@ -41,7 +42,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
-    </div >
+    </>
   );
 }
 

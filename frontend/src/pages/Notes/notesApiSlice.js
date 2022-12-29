@@ -5,7 +5,9 @@ import {
 
 import { apiSlice } from '../../app/api/apiSlice';
 
-const notesAdapter = createEntityAdapter({});
+const notesAdapter = createEntityAdapter({
+    sortComparer: (a, b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1
+});
 
 const initialState = notesAdapter.getInitialState();
 
@@ -16,7 +18,6 @@ export const notesApliSlice = apiSlice.injectEndpoints({
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
-            keepUnusedDataFor: 5,
             transformResponse: responseData => {
                 const loadedNotes = responseData.map(note => {
                     note.id = note._id;
@@ -32,6 +33,18 @@ export const notesApliSlice = apiSlice.injectEndpoints({
                     ]
                 } else return [{ type: 'Note', id: 'LIST' }]
             }
+        }),
+        addNewNote: builder.mutation({
+            query: initialNoteData => ({
+                url: '/notes',
+                method: 'POST',
+                body: {
+                    ...initialNoteData
+                }
+            }),
+            invalidatesTags: (results, error, arg) => [
+                { type: "Note", id: "LIST" }
+            ]
         })
     })
 });
@@ -52,4 +65,4 @@ export const {
     selectAll: selectAllnotes,
     selectById: selectNoteById,
     selectIds: selectNoteIds
-} = notesAdapter.getSelectors(state => selectNotesData(state) ?? initialState)
+} = notesAdapter.getSelectors(state => selectNotesData(state) ?? initialState);

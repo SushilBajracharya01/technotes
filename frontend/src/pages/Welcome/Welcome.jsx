@@ -1,27 +1,56 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+
+import {
+  faCalendar,
+  faClock,
+  faHandDots,
+  faNoteSticky,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 
 /**
  *
  */
 export default function Welcome() {
-  const date = new Date();
-  const today = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "full",
-    timeStyle: "long",
-  }).format(date);
+  const date = dayjs();
+  const today = date.format("dddd, MMMM D, YYYY");
+  const time = date.format("h:mm A");
+
   return (
     <section className="welcome">
-      <p>{today}</p>
+      <div className="flex justify-between">
+        <p className="text-xl">
+          <FontAwesomeIcon icon={faCalendar} className="mr-3" />
+          {today}
+        </p>
+        <p className="text-xl">
+          <FontAwesomeIcon icon={faClock} className="mr-3" />
+          {time}
+        </p>
+      </div>
 
-      <h1>Welcome!</h1>
+      <h1 className="mt-14 text-4xl text-center mb-14">
+        <FontAwesomeIcon icon={faHandDots} className="mr-3" />
+        Welcome!
+      </h1>
 
-      <p>
-        <Link to="/dash/notes">View techNotes</Link>
-      </p>
-      
-      <p>
-        <Link to="/dash/users">View User Settings</Link>
-      </p>
+      <div className="flex justify-evenly">
+        <p>
+          <Link to="/dash/notes" className="text-pink-600 hover:text-pink-500">
+            <FontAwesomeIcon icon={faNoteSticky} className="mr-3" />
+            View techNotes
+          </Link>
+        </p>
+
+        <p>
+          <Link to="/dash/users" className="text-pink-600 hover:text-pink-500">
+            <FontAwesomeIcon icon={faUser} className="mr-3" />
+            View User Settings
+          </Link>
+        </p>
+      </div>
     </section>
   );
 }

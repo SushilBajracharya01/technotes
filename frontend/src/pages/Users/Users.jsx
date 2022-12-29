@@ -1,3 +1,8 @@
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
+import ErrorAlert from "../../components/ErrorAlert";
+import Button from "../../elements/Button";
 import User from "./User";
 import { useGetUsersQuery } from "./userApiSlice";
 
@@ -11,11 +16,12 @@ export default function Users() {
     isSuccess,
     isError,
     error,
-  } = useGetUsersQuery(null, {
+  } = useGetUsersQuery("usersList", {
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
+  const navigate = useNavigate();
 
   let content;
 
@@ -24,7 +30,7 @@ export default function Users() {
   }
 
   if (isError) {
-    content = <p className="errmsg">{error?.data?.message}</p>;
+    content = <ErrorAlert message={error?.data?.message} />;
   }
 
   if (isSuccess) {
@@ -34,24 +40,41 @@ export default function Users() {
       ? ids.map((userId) => <User key={userId} userId={userId} />)
       : null;
 
-    content = (
-      <table className="table table--users">
-        <thead className="table__thead">
-          <tr>
-            <th scope="col" className="table__th user__username">
-              Username
-            </th>
-            <th scope="col" className="table__th user__roles">
-              Roles
-            </th>
-            <th scope="col" className="table__th user__edit">
-              Edit
-            </th>
-          </tr>
-        </thead>
+    const onAddUserClick = () => {
+      navigate("new");
+    };
 
-        <tbody>{tableContent}</tbody>
-      </table>
+    content = (
+      <>
+        <div className="flex justify-between mb-4">
+          <h2 className="text-2xl font-semibold">Users</h2>
+
+          <Button
+            icon={<FontAwesomeIcon className="mr-2" icon={faPlus} />}
+            variant="primary"
+            label="Add User"
+            onClick={onAddUserClick}
+          />
+        </div>
+        
+        <table className="table-fixed w-full text-gray-500">
+          <thead className="text-sm text-gray-700 bg-gray-50 uppercase">
+            <tr>
+              <th scope="col" className="py-3">
+                Username
+              </th>
+              <th scope="col" className="py-3">
+                Roles
+              </th>
+              <th scope="col" className="py-3">
+                Edit
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>{tableContent}</tbody>
+        </table>
+      </>
     );
   }
 

@@ -17,10 +17,10 @@ export default function User({ userId }) {
     const cellStatus = user.active ? "" : "table__cell--inactive";
 
     return (
-      <tr className="table__row user">
-        <td className={`table__cell ${cellStatus}`}>{user.username}</td>
-        <td className={`table__cell ${cellStatus}`}>{userRolesString}</td>
-        <td className={`table__cell ${cellStatus}`}>
+      <tr className="bg-white border-b hover:bg-gray-50 text-center text-gray-800">
+        <td className={`table__cell ${cellStatus} py-3`}>{user.username}</td>
+        <td className={`table__cell ${cellStatus} py-3`}>{userRolesString}</td>
+        <td className={`table__cell ${cellStatus} py-3`}>
           <button className="icon-button table__button" onClick={handleEdit}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
