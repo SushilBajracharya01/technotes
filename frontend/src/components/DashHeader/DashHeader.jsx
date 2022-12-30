@@ -1,9 +1,15 @@
-import { faBackward, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBackward,
+  faNoteSticky,
+  faRightFromBracket,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSendLogoutMutation } from "../../app/auth/authApiSlice";
 import Button from "../../elements/Button";
+import useAuth from "../../hooks/useAuth";
 
 const DASH_REGEX = /^\/dash(\/)?$/;
 const NOTES_REGEX = /^\/dash\/notes(\/)?$/;
@@ -15,6 +21,8 @@ const USERS_REGEX = /^\/dash\/users(\/)?$/;
 export default function DashHeader() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  const { isAdmin, isManager } = useAuth();
 
   const onGoBackClicked = () => navigate(-1);
 
@@ -47,9 +55,43 @@ export default function DashHeader() {
     <div className="container px-4 sm:px-0 mx-auto ">
       <header className="backdrop-blur-md py-4 ">
         <div className={`flex justify-between items-center ${dashClass}`}>
-          <Link to="/dash/notes">
+          <Link to="/dash">
             <h1 className="font-bold text-xl text-slate-100">TechNotes</h1>
           </Link>
+
+          <div>
+            {(isAdmin || isManager) && (
+              <NavLink to={"/dash/users"}>
+                {({ isActive }) => {
+                  return (
+                    <FontAwesomeIcon
+                      icon={faUsers}
+                      className={`text-gray-50 text-2xl mx-2 ${
+                        isActive
+                          ? "text-pink-500 cursor-default"
+                          : "hover:text-blue-400 cursor-pointer"
+                      }`}
+                    />
+                  );
+                }}
+              </NavLink>
+            )}
+
+            <NavLink to={"/dash/notes"}>
+              {({ isActive }) => {
+                return (
+                  <FontAwesomeIcon
+                    icon={faNoteSticky}
+                    className={`text-gray-50 text-2xl mx-2 ${
+                      isActive
+                        ? "text-pink-500 cursor-default"
+                        : "hover:text-blue-400 cursor-pointer"
+                    }`}
+                  />
+                );
+              }}
+            </NavLink>
+          </div>
 
           <nav className="dash-header__nav">
             <Button

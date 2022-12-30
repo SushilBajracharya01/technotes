@@ -2,7 +2,9 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import ErrorAlert from "../../components/ErrorAlert";
+import Loading from "../../components/Loading/Loading";
 import Button from "../../elements/Button";
+import useAuth from "../../hooks/useAuth";
 import User from "./User";
 import { useGetUsersQuery } from "./userApiSlice";
 
@@ -22,11 +24,12 @@ export default function Users() {
     refetchOnMountOrArgChange: true,
   });
   const navigate = useNavigate();
+  const { isAdmin, isManager } = useAuth();
 
   let content;
 
   if (isLoading) {
-    content = <p>Loading ...</p>;
+    content = <Loading />;
   }
 
   if (isError) {
@@ -36,9 +39,8 @@ export default function Users() {
   if (isSuccess) {
     const { ids } = users;
 
-    const tableContent = ids?.length
-      ? ids.map((userId) => <User key={userId} userId={userId} />)
-      : null;
+    const tableContent =
+      ids?.length && ids.map((userId) => <User key={userId} userId={userId} />);
 
     const onAddUserClick = () => {
       navigate("new");
@@ -49,14 +51,16 @@ export default function Users() {
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-semibold">Users</h2>
 
-          <Button
-            icon={<FontAwesomeIcon className="mr-2" icon={faPlus} />}
-            variant="primary"
-            label="Add User"
-            onClick={onAddUserClick}
-          />
+          {(isAdmin || isManager) && (
+            <Button
+              icon={<FontAwesomeIcon className="mr-2" icon={faPlus} />}
+              variant="primary"
+              label="Add User"
+              onClick={onAddUserClick}
+            />
+          )}
         </div>
-        
+
         <table className="table-fixed w-full text-gray-500">
           <thead className="text-sm text-gray-700 bg-gray-50 uppercase">
             <tr>

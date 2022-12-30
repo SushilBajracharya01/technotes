@@ -6,6 +6,7 @@ import Loading from "../../components/Loading";
 import Button from "../../elements/Button";
 import Note from "./Note";
 import { useGetNotesQuery } from "./notesApiSlice";
+import useAuth from "../../hooks/useAuth";
 
 /**
  *
@@ -17,12 +18,14 @@ export default function Notes() {
     isLoading,
     isError,
     isSuccess,
-  } = useGetNotesQuery(undefined, {
+  } = useGetNotesQuery("notesList", {
     pollingInterval: 15000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
   const navigate = useNavigate();
+
+  const { username, isAdmin, isManager } = useAuth();
 
   let content;
   if (isLoading) {
@@ -34,10 +37,20 @@ export default function Notes() {
   }
 
   if (isSuccess) {
-    const { ids } = notes;
-    const tableContent = ids?.length
-      ? ids.map((noteId) => <Note key={noteId} noteId={noteId} />)
-      : null;
+    const { ids, entities } = notes;
+
+    let filteredIds;
+    if (isManager || isAdmin) {
+      filteredIds = [...ids];
+    } else {
+      filteredIds = ids.filter(
+        (noteId) => entities[noteId].username === username
+      );
+    }
+
+    const tableContent =
+      filteredIds?.length &&
+      filteredIds.map((noteId) => <Note key={noteId} noteId={noteId} />);
 
     const onAddNoteClick = () => {
       navigate("new");

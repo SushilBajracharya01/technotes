@@ -55,7 +55,7 @@ export default function NewNoteForm({ users }) {
   return (
     <div>
       <form onSubmit={onSaveNoteClicked}>
-        <h2 className="text-2xl font-semibold mb-6">New User</h2>
+        <h2 className="text-2xl font-semibold mb-6">New Note</h2>
 
         <div className="w-full lg:w-1/2 lg:mx-auto">
           <div className="mb-5">

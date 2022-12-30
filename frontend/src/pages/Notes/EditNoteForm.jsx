@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import ErrorAlert from "../../components/ErrorAlert";
 import Button from "../../elements/Button";
 import Input from "../../elements/Input";
+import useAuth from "../../hooks/useAuth";
 import { useDeleteNoteMutation, useUpdateNoteMutation } from "./notesApiSlice";
 
 export default function EditNoteForm({ note, users }) {
   const [updateNote, { isLoading, isSuccess, error }] = useUpdateNoteMutation();
-
+  const { isAdmin, isManager } = useAuth();
   const [
     deleteNote,
     { isSuccess: isDelSuccess, isError: isDelError, error: delError },
@@ -65,7 +66,7 @@ export default function EditNoteForm({ note, users }) {
   return (
     <div>
       <form onSubmit={onSaveNoteClicked}>
-        <h2 className="text-2xl font-semibold mb-6">New User</h2>
+        <h2 className="text-2xl font-semibold mb-6">Edit Note</h2>
 
         <div className="w-full lg:w-1/2 lg:mx-auto">
           <div className="mb-5">
@@ -135,15 +136,17 @@ export default function EditNoteForm({ note, users }) {
             Save
           </Button>
 
-          <Button
-            variant="danger-outline"
-            label="Delete"
-            className="ml-4"
-            icon={<FontAwesomeIcon icon={faTrash} className="mr-2" />}
-            onClick={onDeleteNoteClicked}
-          >
-            Delete
-          </Button>
+          {(isAdmin || isManager) && (
+            <Button
+              variant="danger-outline"
+              label="Delete"
+              className="ml-4"
+              icon={<FontAwesomeIcon icon={faTrash} className="mr-2" />}
+              onClick={onDeleteNoteClicked}
+            >
+              Delete
+            </Button>
+          )}
 
           <p className="h-[20px] mt-4">
             <ErrorAlert message={errContent} />

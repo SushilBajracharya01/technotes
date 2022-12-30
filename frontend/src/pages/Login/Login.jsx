@@ -124,14 +124,14 @@ export default function Login() {
               />
             </div>
 
-            <label>
+            <label className="block mt-4">
               <input
                 type="checkbox"
                 id="persist"
                 onChange={handleToggle}
                 checked={persist}
               />{" "}
-              Trusted computer
+              Trust this computer
             </label>
           </form>
         </main>

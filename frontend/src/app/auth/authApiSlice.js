@@ -1,5 +1,5 @@
 import { apiSlice } from '../api/apiSlice';
-import { logOut } from './authSlice';
+import { logOut, setCredentials } from './authSlice';
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -15,10 +15,9 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 url: '/auth/logout',
                 method: 'POST'
             }),
-            async onQueryStarted(arg, { dispatch, queryFuilfilled }) {
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    console.log(queryFuilfilled, 'queryFuilfilled')
-                    await queryFuilfilled;
+                    await queryFulfilled;
                     dispatch(logOut());
                     setTimeout(() => {
                         dispatch(apiSlice.util.resetApiState());
@@ -33,7 +32,18 @@ export const authApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: '/auth/refresh',
                 method: 'GET'
-            })
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    if (!queryFulfilled) return;
+                    const { data } = await queryFulfilled;
+                    const { accessToken } = data;
+                    dispatch(setCredentials({ accessToken }));
+                }
+                catch (err) {
+                    console.log(err);
+                }
+            }
         })
     })
 })

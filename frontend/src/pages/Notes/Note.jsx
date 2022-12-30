@@ -1,15 +1,27 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-import { selectNoteById } from "./notesApiSlice";
+import { selectNoteById, useDeleteNoteMutation } from "./notesApiSlice";
+import Swal from "sweetalert2";
+import useAuth from "../../hooks/useAuth";
 
 export default function Note({ noteId }) {
   const note = useSelector((state) => selectNoteById(state, noteId));
   const navigate = useNavigate();
+  const { isAdmin, isManager } = useAuth();
+
+  const [deleteNote] = useDeleteNoteMutation();
 
   const handleEdit = () => navigate(`/dash/notes/${noteId}`);
+
+  const handleDelete = async (noteId) => {
+    try {
+      await deleteNote({ id: noteId });
+      Swal.fire("Deleted!", "Note has been deleted.", "success");
+    } catch (err) {}
+  };
 
   if (note) {
     return (
@@ -25,9 +37,34 @@ export default function Note({ noteId }) {
         <td className={`py-3`}>{note.text}</td>
         <td className={`py-3`}>{note.username}</td>
         <td className={`py-3`}>
-          <button className="icon-button table__button" onClick={handleEdit}>
+          <button
+            className="text-blue-500 mx-1 text-xl hover:text-blue-600"
+            onClick={handleEdit}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
+          {(isAdmin || isManager) && (
+            <button
+              className="text-red-500 mx-1 text-xl hover:text-red-600"
+              onClick={() => {
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, delete it!",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    handleDelete(note.id);
+                  }
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          )}
         </td>
       </tr>
     );
