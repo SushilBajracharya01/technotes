@@ -22,12 +22,12 @@ const createNewUser = asyncHandler(async (req, res) => {
     const { username, password, roles } = req.body;
 
     // Confirm data
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    if (!username || !password) {
         return res.status(400).json({ message: 'All Fields are required' });
     }
 
     // Check for duplicate
-    const duplicate = await User.findOne({ username }).lean().exec();
+    const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec();
 
     if (duplicate) {
         return res.status(409).json({ message: 'Duplicate username' });
@@ -36,9 +36,12 @@ const createNewUser = asyncHandler(async (req, res) => {
     // Hash password
     const hashedPwd = await bcrypt.hash(password, 10);
 
-    const userObject = {
-        username, 'password': hashedPwd, roles
-    }
+    const userObject = (!Array.isArray(roles) || !roles.length) ? {
+        username, 'password': hashedPwd
+    } :
+        {
+            username, 'password': hashedPwd, roles
+        };
 
     // Create and Store new user
     const user = await User.create(userObject);
@@ -69,7 +72,7 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     // check for duplicate
-    const duplicate = await User.findOne({ username }).lean().exec();
+    const duplicate = await User.findOne({ username }).collation({ locale: 'en', strength: 2 }).lean().exec();
 
     if (duplicate && duplicate?._id.toString() !== id) {
         return res.status(409).json({ message: 'Duplicate username' });
