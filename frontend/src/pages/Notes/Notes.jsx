@@ -7,6 +7,7 @@ import Button from "../../elements/Button";
 import Note from "./Note";
 import { useGetNotesQuery } from "./notesApiSlice";
 import useAuth from "../../hooks/useAuth";
+import useTitle from "../../hooks/useTitle";
 
 /**
  *
@@ -24,6 +25,7 @@ export default function Notes() {
     refetchOnMountOrArgChange: true,
   });
   const navigate = useNavigate();
+  useTitle("Technotes - Notes");
 
   const { username, isAdmin, isManager } = useAuth();
 

@@ -2,13 +2,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
-import { useSelector } from "react-redux";
-import { selectNoteById, useDeleteNoteMutation } from "./notesApiSlice";
+import { useDeleteNoteMutation } from "./notesApiSlice";
 import Swal from "sweetalert2";
 import useAuth from "../../hooks/useAuth";
 
-export default function Note({ noteId }) {
-  const note = useSelector((state) => selectNoteById(state, noteId));
+import { useGetNotesQuery } from "./notesApiSlice";
+import { memo } from "react";
+
+function Note({ noteId }) {
+  const { note } = useGetNotesQuery("noteslist", {
+    selectFromResult: ({ data }) => ({
+      note: data?.entities[noteId],
+    }),
+  });
   const navigate = useNavigate();
   const { isAdmin, isManager } = useAuth();
 
@@ -70,3 +76,6 @@ export default function Note({ noteId }) {
     );
   } else return null;
 }
+
+const memoizedNote = memo(Note);
+export default memoizedNote;

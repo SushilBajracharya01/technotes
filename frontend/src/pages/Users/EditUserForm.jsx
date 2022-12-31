@@ -14,7 +14,7 @@ export default function EditUserForm({ user }) {
 
   const [
     deleteUser,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
+    { isSuccess: isDelSuccess, error: delError },
   ] = useDeleteUserMutation();
 
   const navigate = useNavigate();

@@ -11,13 +11,15 @@ const notesAdapter = createEntityAdapter({
 
 const initialState = notesAdapter.getInitialState();
 
-export const notesApliSlice = apiSlice.injectEndpoints({
+export const notesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getNotes: builder.query({
-            query: () => '/notes',
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            query: () => ({
+                url: '/notes',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                }
+            }),
             transformResponse: responseData => {
                 const loadedNotes = responseData.map(note => {
                     note.id = note._id;
@@ -78,10 +80,10 @@ export const {
     useAddNewNoteMutation,
     useUpdateNoteMutation,
     useDeleteNoteMutation
-} = notesApliSlice;
+} = notesApiSlice;
 
 
-export const selectNotesResult = notesApliSlice.endpoints.getNotes.select();
+export const selectNotesResult = notesApiSlice.endpoints.getNotes.select();
 
 const selectNotesData = createSelector(
     selectNotesResult,

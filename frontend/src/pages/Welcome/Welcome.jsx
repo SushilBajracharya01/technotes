@@ -39,13 +39,6 @@ export default function Welcome() {
       </h1>
 
       <div className="flex justify-evenly">
-        <p>
-          <Link to="/dash/notes" className="text-pink-600 hover:text-pink-500">
-            <FontAwesomeIcon icon={faNoteSticky} className="mr-3" />
-            View techNotes
-          </Link>
-        </p>
-
         {(isAdmin || isManager) && (
           <p>
             <Link
@@ -57,6 +50,13 @@ export default function Welcome() {
             </Link>
           </p>
         )}
+
+        <p>
+          <Link to="/dash/notes" className="text-pink-600 hover:text-pink-500">
+            <FontAwesomeIcon icon={faNoteSticky} className="mr-3" />
+            View techNotes
+          </Link>
+        </p>
       </div>
     </section>
   );

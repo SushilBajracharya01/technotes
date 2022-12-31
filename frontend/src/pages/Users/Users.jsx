@@ -5,6 +5,7 @@ import ErrorAlert from "../../components/ErrorAlert";
 import Loading from "../../components/Loading/Loading";
 import Button from "../../elements/Button";
 import useAuth from "../../hooks/useAuth";
+import useTitle from "../../hooks/useTitle";
 import User from "./User";
 import { useGetUsersQuery } from "./userApiSlice";
 
@@ -25,6 +26,8 @@ export default function Users() {
   });
   const navigate = useNavigate();
   const { isAdmin, isManager } = useAuth();
+
+  useTitle("Technotes - Users");
 
   let content;
 

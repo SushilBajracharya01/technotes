@@ -11,10 +11,8 @@ import { useDeleteNoteMutation, useUpdateNoteMutation } from "./notesApiSlice";
 export default function EditNoteForm({ note, users }) {
   const [updateNote, { isLoading, isSuccess, error }] = useUpdateNoteMutation();
   const { isAdmin, isManager } = useAuth();
-  const [
-    deleteNote,
-    { isSuccess: isDelSuccess, isError: isDelError, error: delError },
-  ] = useDeleteNoteMutation();
+  const [deleteNote, { isSuccess: isDelSuccess, error: delError }] =
+    useDeleteNoteMutation();
 
   const navigate = useNavigate();
 

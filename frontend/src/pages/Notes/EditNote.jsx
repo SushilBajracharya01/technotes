@@ -1,19 +1,38 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import ErrorAlert from "../../components/ErrorAlert";
 import Loading from "../../components/Loading";
-import { selectAllUsers } from "../Users/userApiSlice";
+import useAuth from "../../hooks/useAuth";
+import { useGetUsersQuery } from "../Users/userApiSlice";
 import EditNoteForm from "./EditNoteForm";
-import { selectNoteById } from "./notesApiSlice";
+import { useGetNotesQuery } from "./notesApiSlice";
 
 export default function EditNote() {
   const { id } = useParams();
 
-  const users = useSelector(selectAllUsers);
-  const note = useSelector((state) => selectNoteById(state, id));
+  const { username, isAdmin, isManager } = useAuth();
 
-  const content =
-    note && users ? <EditNoteForm note={note} users={users} /> : <Loading />;
+  const { note } = useGetNotesQuery("notesList", {
+    selectFromResult: ({ data }) => ({
+      note: data?.entities[id],
+    }),
+  });
+
+  const { users } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      users: data?.ids.map((id) => data?.entities[id]),
+    }),
+  });
+
+  if (!note || !users?.length) return <Loading />;
+
+  if (isAdmin || isManager) {
+    if (note.username === username) {
+      return <ErrorAlert message={"NO access"} />;
+    }
+  }
+
+  const content = <EditNoteForm note={note} users={users} />;
 
   return content;
 }

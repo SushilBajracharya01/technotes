@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setCredentials } from '../auth/authSlice';
 
+const productionAPI = "https://technotes-sushil-api.onrender.com";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:3500",
+    baseUrl: process.env.NODE_ENV === "production" ? productionAPI
+        : 'http://localhost:3500',
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.token;

@@ -2,18 +2,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 
-import { useSelector } from "react-redux";
-import { selectUserById, useDeleteUserMutation } from "./userApiSlice";
+import {
+  useDeleteUserMutation,
+  useGetUsersQuery,
+} from "./userApiSlice";
 import Swal from "sweetalert2";
+import { memo } from "react";
 
-export default function User({ userId }) {
-  const user = useSelector((state) => selectUserById(state, userId));
+function User({ userId }) {
+  const { user } = useGetUsersQuery("usersList", {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[userId],
+    }),
+  });
   const navigate = useNavigate();
 
   const [deleteUser] = useDeleteUserMutation();
 
   const handleEdit = () => navigate(`/dash/users/${userId}`);
-
+  console.log(user, "user", userId);
   if (user) {
     const userRolesString = user.roles.toString().replaceAll(",", ", ");
 
@@ -63,3 +70,6 @@ export default function User({ userId }) {
     );
   } else return null;
 }
+
+const memoziedUser = memo(User);
+export default memoziedUser;
